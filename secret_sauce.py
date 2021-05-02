@@ -6,12 +6,12 @@ from glob import glob
 DIST_FOLDER = 'dist'
 
 class Enigme:
-    def __init__(self, *, enigme_file: str):
-        self._enigme_file = enigme_file
+    def __init__(self, *, folder: str):
+        self._folder = folder
 
     @property
-    def enigme_file(self) -> str:
-        return self._enigme_file
+    def folder(self) -> str:
+        return self._folder
 
     @property
     def index(self) -> str:
@@ -23,14 +23,14 @@ class Enigme:
 
     @property
     def answer(self) -> str:
-        return self._splits[2].replace('.html', '')
+        return self._splits[2]
 
     @property
     def _splits(self) -> List[str]:
-        return self._enigme_file.replace('enigmes/', '').split('_')
+        return self._folder.replace('enigmes/', '').split('_')
 
 def get_enigmes() -> List[Enigme]:
-    return sorted([Enigme(enigme_file=enigme_file) for enigme_file in glob('enigmes/*.html')], key=lambda enigme: enigme.index)
+    return sorted([Enigme(folder=folder) for folder in glob('enigmes/*')], key=lambda enigme: enigme.index)
 
 def shift(*, enigmes: List[Enigme], by: int) -> List[Enigme]:
     for i in range(by):
@@ -46,7 +46,9 @@ def generate_team_filetree(*, team_index: int):
     mkdir(current_dir)
     enigmes = shift(enigmes=get_enigmes(), by=team_index - 1)
     for enigme in enigmes:
-        copyfile(enigme._enigme_file, path.join(current_dir, 'index.html'))
+        enigme_files = glob(path.join(enigme.folder, '*'))
+        for enigme_file in enigme_files:
+            copyfile(enigme_file, path.join(current_dir, path.basename(enigme_file)))
         current_dir = path.join(current_dir, enigme.answer)
         mkdir(current_dir)
     copyfile('fin.html', path.join(current_dir, 'index.html'))
