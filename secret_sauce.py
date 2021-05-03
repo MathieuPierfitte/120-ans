@@ -3,9 +3,10 @@ from shutil import rmtree, copyfile
 from os import mkdir, path
 from glob import glob
 
-DIST_FOLDER = 'dist'
+DIST_FOLDER = "dist"
+RIDDLES_FOLDER = "enigmes"
 
-class Enigme:
+class Riddle:
     def __init__(self, *, folder: str):
         self._folder = folder
 
@@ -27,31 +28,31 @@ class Enigme:
 
     @property
     def _splits(self) -> List[str]:
-        return self._folder.replace('enigmes/', '').split('_')
+        return path.basename(self._folder).split("_")
 
-def get_enigmes() -> List[Enigme]:
-    return sorted([Enigme(folder=folder) for folder in glob('enigmes/*')], key=lambda enigme: enigme.index)
+def get_riddles() -> List[Riddle]:
+    return sorted([Riddle(folder=folder) for folder in glob(path.join(RIDDLES_FOLDER, "*"))], key=lambda riddle: riddle.folder)
 
-def shift(*, enigmes: List[Enigme], by: int) -> List[Enigme]:
+def shift(*, riddles: List[Riddle], by: int) -> List[Riddle]:
     for i in range(by):
-        enigmes.append(enigmes.pop(0))
-    return enigmes
+        riddles.append(riddles.pop(0))
+    return riddles
 
 def generate_team_filetree(*, team_index: int):
-    current_dir = path.join(DIST_FOLDER, f'equipe{team_index}')
+    current_dir = path.join(DIST_FOLDER, f"equipe{team_index}")
     mkdir(current_dir)
-    for start_file in ['depart.html', 'dechargeDeResponsabilite.html']:
+    for start_file in ["depart.html", "dechargeDeResponsabilite.html"]:
         copyfile(start_file, path.join(current_dir, start_file))
-    current_dir = path.join(current_dir, 'next')
+    current_dir = path.join(current_dir, "next")
     mkdir(current_dir)
-    enigmes = shift(enigmes=get_enigmes(), by=team_index - 1)
-    for enigme in enigmes:
-        enigme_files = glob(path.join(enigme.folder, '*'))
-        for enigme_file in enigme_files:
-            copyfile(enigme_file, path.join(current_dir, path.basename(enigme_file)))
-        current_dir = path.join(current_dir, enigme.answer)
+    riddles = shift(riddles=get_riddles(), by=team_index - 1)
+    for riddle in riddles:
+        riddle_files = glob(path.join(riddle.folder, "*"))
+        for riddle_file in riddle_files:
+            copyfile(riddle_file, path.join(current_dir, path.basename(riddle_file)))
+        current_dir = path.join(current_dir, riddle.answer)
         mkdir(current_dir)
-    copyfile('fin.html', path.join(current_dir, 'index.html'))
+    copyfile("arrivee.html", path.join(current_dir, "index.html"))
 
 if __name__ == "__main__":
     try:
