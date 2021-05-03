@@ -4,6 +4,7 @@ from os import mkdir, path
 from glob import glob
 
 DIST_FOLDER = "dist"
+NOT_FOUND_PAGE = "404.html"
 RIDDLES_FOLDER = "enigmes"
 
 class Riddle:
@@ -60,5 +61,6 @@ if __name__ == "__main__":
     except FileNotFoundError:
         pass
     mkdir(DIST_FOLDER)
+    copyfile(NOT_FOUND_PAGE, path.join(DIST_FOLDER, NOT_FOUND_PAGE))
     for team_index in range(1, 11):
         generate_team_filetree(team_index=team_index)
