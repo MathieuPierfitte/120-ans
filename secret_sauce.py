@@ -16,16 +16,20 @@ class Riddle:
         return self._folder
 
     @property
-    def index(self) -> str:
+    def chapter(self) -> str:
         return self._splits[0]
 
     @property
-    def name(self) -> str:
+    def part(self) -> str:
         return self._splits[1]
 
     @property
-    def answer(self) -> str:
+    def name(self) -> str:
         return self._splits[2]
+
+    @property
+    def answer(self) -> str:
+        return self._splits[3]
 
     @property
     def _splits(self) -> List[str]:
@@ -34,9 +38,11 @@ class Riddle:
 def get_riddles() -> List[Riddle]:
     return sorted([Riddle(folder=folder) for folder in glob(path.join(RIDDLES_FOLDER, "*"))], key=lambda riddle: riddle.folder)
 
-def shift(*, riddles: List[Riddle], by: int) -> List[Riddle]:
-    for i in range(by):
-        riddles.append(riddles.pop(0))
+def shift_chapter(*, riddles: List[Riddle], by: int) -> List[Riddle]:
+    for _ in range(by):
+        chapter = riddles[0].chapter
+        while riddles[0].chapter == chapter:
+            riddles.append(riddles.pop(0))
     return riddles
 
 def generate_team_filetree(*, team_index: int):
@@ -46,7 +52,7 @@ def generate_team_filetree(*, team_index: int):
         copyfile(start_file, path.join(current_dir, start_file))
     current_dir = path.join(current_dir, "next")
     mkdir(current_dir)
-    riddles = shift(riddles=get_riddles(), by=team_index - 1)
+    riddles = shift_chapter(riddles=get_riddles(), by=team_index - 1)
     for riddle in riddles:
         riddle_files = glob(path.join(riddle.folder, "*"))
         for riddle_file in riddle_files:
