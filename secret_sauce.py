@@ -62,7 +62,20 @@ def generate_team_filetree(*, team_index: int):
     copyfile("arrivee.html", path.join(current_dir, "index.html"))
 
 def generate_cheat_sheet():
-    lines = [f"Chapitre {riddle.chapter}, partie {riddle.part} : {riddle.answer} ({riddle.name})\n" for riddle in get_riddles()]
+    lines = ["Équipes\n"]
+    lines += [
+        "Sport : Chaussures d’escalade, But de foot, Gants de boxe, Ballon de handball, Panier de basket\n",
+        "Salle de bain : Coton-tige, Brosse à dents, Coupe-ongles, Dentifrice, Rideau de douche\n",
+        "Geek : Smartphone, Ordinateur, Tablette tactile, Montre connectée, Télévision\n",
+        "Instruments de musique : Saxophone, Violon, Batterie, Piano, Guitare\n",
+        "Chambre : Oreiller, Matelas, Lit, Couette, Table de chevet\n",
+        "Gala : Robe de soirée, Noeud papillon, Chemise, Cravate, Talons aiguille\n",
+        "Alcool : Bière, Vin, Rhum, Whiskey, Vodka\n",
+        "Junk food : Hamburger, Pizza, Tacos, Kebab, Hot dog\n",
+        "Gastronomie française : Boeuf bourguignon, Gratin dauphinois, Cassoulet, Steak tartare, Pot au feu\n"
+    ]
+    lines += ["\n", "Énigmes\n"]
+    lines += [f"Chapitre {riddle.chapter}, partie {riddle.part} : {riddle.answer} ({riddle.name})\n" for riddle in get_riddles()]
     with open(path.join(DIST_FOLDER, "cheatSheet.txt"), "w") as file:
         file.writelines(lines)
 
