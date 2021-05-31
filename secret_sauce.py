@@ -4,6 +4,7 @@ from os import mkdir, path
 from glob import glob
 
 DIST_FOLDER = "dist"
+START_PAGE = "depart.html"
 NOT_FOUND_PAGE = "404.html"
 RIDDLES_FOLDER = "enigmes"
 
@@ -48,8 +49,7 @@ def shift_chapter(*, riddles: List[Riddle], by: int) -> List[Riddle]:
 def generate_team_filetree(*, team_index: int):
     current_dir = path.join(DIST_FOLDER, f"equipe{team_index}")
     mkdir(current_dir)
-    for start_file in ["depart.html", "dechargeDeResponsabilite.html"]:
-        copyfile(start_file, path.join(current_dir, start_file))
+    copyfile(START_PAGE, path.join(current_dir, START_PAGE))
     current_dir = path.join(current_dir, "next")
     mkdir(current_dir)
     riddles = shift_chapter(riddles=get_riddles(), by=team_index - 1)
@@ -61,6 +61,11 @@ def generate_team_filetree(*, team_index: int):
         mkdir(current_dir)
     copyfile("arrivee.html", path.join(current_dir, "index.html"))
 
+def generate_cheat_sheet():
+    lines = [f"Chapitre {riddle.chapter}, partie {riddle.part} : {riddle.answer} ({riddle.name})\n" for riddle in get_riddles()]
+    with open(path.join(DIST_FOLDER, "cheatSheet.txt"), "w") as file:
+        file.writelines(lines)
+
 if __name__ == "__main__":
     try:
         rmtree(DIST_FOLDER)
@@ -70,3 +75,4 @@ if __name__ == "__main__":
     copyfile(NOT_FOUND_PAGE, path.join(DIST_FOLDER, NOT_FOUND_PAGE))
     for team_index in range(1, 11):
         generate_team_filetree(team_index=team_index)
+    generate_cheat_sheet()
