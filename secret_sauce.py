@@ -73,6 +73,6 @@ if __name__ == "__main__":
         pass
     mkdir(DIST_FOLDER)
     copyfile(NOT_FOUND_PAGE, path.join(DIST_FOLDER, NOT_FOUND_PAGE))
-    for team_index in range(1, 11):
+    for team_index in range(1, 9):
         generate_team_filetree(team_index=team_index)
     generate_cheat_sheet()
