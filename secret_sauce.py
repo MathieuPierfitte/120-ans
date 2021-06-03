@@ -1,5 +1,5 @@
 from typing import List
-from shutil import rmtree, copyfile
+from shutil import rmtree, copyfile, copytree
 from os import mkdir, path
 from glob import glob
 
@@ -78,6 +78,9 @@ def generate_cheat_sheet():
     lines += [f"Chapitre {riddle.chapter}, partie {riddle.part} : {riddle.answer} ({riddle.name})\n" for riddle in get_riddles()]
     with open(path.join(DIST_FOLDER, "cheatSheet.txt"), "w") as file:
         file.writelines(lines)
+    
+def copy_count_webapp():
+    copytree('count', path.join('dist', 'count'))
 
 if __name__ == "__main__":
     try:
@@ -89,3 +92,4 @@ if __name__ == "__main__":
     for team_index in range(1, 9):
         generate_team_filetree(team_index=team_index)
     generate_cheat_sheet()
+    copy_count_webapp()
